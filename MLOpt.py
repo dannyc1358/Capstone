@@ -129,7 +129,7 @@ print(model_sm.summary())
 
 #predicted listing price & percent change
 predicted_price = np.exp(test_pred)
-pct_change = (np.exp(model_sm.params) - 1) * 100
+pct_change = (np.exp(model_sm.params.drop('const')) - 1) * 100
 print('Pct change:', pct_change)
 
 #finding optimal sale price with a dynamic margin based on features
