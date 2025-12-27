@@ -7,7 +7,6 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
 import statsmodels.api as sm
 
-
 #Load original dataset for cleaning
 df = pd.read_csv('2024_brooklyn.csv')
 pd.set_option('display.max_columns', None)
