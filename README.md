@@ -1,93 +1,30 @@
-# MSDA Capstone
+Capstone Project: 
 
+Optimizing Listing Price Recommendations for Brooklyn Properties
 
+Research Question:
 
-## Getting started
+The research question was to what extent the age of the building, gross square feet, and number of residential units influence the predicted sale price used to determine the optimal listing price of the property. 
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+This research question is justified because accurate property pricing is crucial in the real estate market, as overpricing can lead to an extended time on the market, and underpricing can result in lost revenue. Thus, traditional pricing methods, such as an agent’s intuition or pricing based on a comparable sale, may not fully incorporate the complex relationships between characteristics, neighborhood dynamics, and market behavior. 
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+This research focused on residential property sales, where features such as building age, gross square footage, and number of residential units are known before listing. Analysis of historical sales data can help determine how these characteristics influence the sale price and how those insights can be used to recommend the optimal listing price.
 
-## Add your files
+Analysis:
 
-* [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-* [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
+The analysis examined the relationship between the characteristics and the property sale price using a log-linear multiple regression model. Next, the model was validated by splitting the dataset into a training, validation, and test dataset. Once the predicted sale price was determined, the optimization framework was used to calculate the optimal listing price. 
 
-```
-cd existing_repo
-git remote add origin https://gitlab.com/wgu-gitlab-environment/student-repos/dchen32/msda-capstone.git
-git branch -M main
-git push -uf origin main
-```
+A multiple linear regression model was employed to assess the impact of each predictor variable on the target variable. The advantage of using this model is that it returns coefficients that explain the impact of each predictor. A disadvantage of this model is that it is sensitive to multicollinearity and assumes a linear relationship between the variables. The regression model can be represented as ln(sale price) = 13.2016 + (-0.1089 * Residential Units) + (0.0002 * Gross Sq Ft) + (0.0051 * Building Age).  
+	As shown in the equation, a log transformation was applied to the target variable due to the extreme sale price values. An advantage of this technique is that it reduces skewness and improves model stability. A disadvantage is that small sale price values may be exaggerated with this technique, which is addressed by setting a minimum threshold.
+	 
+The model performance was evaluated with the train-test split technique. This was achieved by splitting the dataset into 70% training, 15% validation, and 15% testing sets. An advantage of this approach is that it ensures the model generalizes well to unseen data. A disadvantage is that it reduces the number of observations for training. Once the data has been split, the root mean squared error was calculated for both the validation dataset and the test set to evaluate predictive accuracy. The validation RMSE was 0.6349, and the test RMSE was 0.6058, which indicated that the model generalizes well to unseen data.
+	 
+Once the predicted sale price was obtained, the optimization framework was implemented to determine the optimal listing price. A dynamic pricing margin was applied to simulate actual market behavior based on building age and gross square footage. The equation to calculate the margin was: 
+	margin = 0.04 + 0.02 (Building age < 25) + 0.01 (gross square footage> 1100) + 0.01 (gross square footage> 2000). 
+	Then, optimal listing price = predictive sale price (1 + margin). 
+	The advantage of this approach is that it displays predictive outputs as actionable pricing decisions. The disadvantage is that these rule-based margins may not capture all market determinants.
 
-## Integrate with your tools
+Results:
 
-* [Set up project integrations](https://gitlab.com/wgu-gitlab-environment/student-repos/dchen32/msda-capstone/-/settings/integrations)
+The results of the log-linear multiple regression analysis with optimization indicate that the building age, gross square footage, and the number of residential units have a statistically significant influence on the predicted sale price. The regression coefficient indicates that building age and gross square footage have a positive influence on the sale price. In contrast, the number of residential units has a negative impact on the sale price. Based on the coefficients, for every additional residential unit, the predicted sale price decreases by approximately 10.32%. For every additional gross square footage, there is a 0.022 percent increase in the predicted sale price. For every additional building age, the predicted sale price increases by 0.51%. Regarding the log constant of 13.2016, which represents the log sale price when all predictors are equal to zero, it is not interpretable since, in the actual real estate market, a building cannot have an age of 0, a size of 0, etc. As mentioned earlier, the validation RMSE was 0.6349 and the test RMSE was 0.6058, indicating a regression model that generalizes well to unseen data. Thus, these results reject the null hypotheses, supporting the alternative hypotheses that building age, gross square feet, and residential units significantly influence the predicted sale price used to determine the optimal listing price.
 
-## Collaborate with your team
-
-* [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-* [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-* [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-* [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-* [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
-
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-* [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/)
-* [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-* [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-* [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-* [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
